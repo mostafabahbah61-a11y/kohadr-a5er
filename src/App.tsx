@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+﻿import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { supabase } from '@/lib/supabase';
 import { AdminDashboard } from '@/components/AdminDashboard';
 import { ContactPage } from '@/components/ContactPage';
@@ -99,21 +99,21 @@ type BotQuestion = {
 };
 
 const FALLBACK_PRODUCTS: Product[] = [
-  { id: 'carrot', label: 'Carrots', ar: 'جزر', detail: 'Fresh, crisp carrots sorted and graded for export quality.', arDetail: 'جزر طازج مقرمش، مفرز ومرتب بجودة تصدير.', category: 'Vegetables', icon: '01', image: 'https://images.pexels.com/photos/33622710/pexels-photo-33622710.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'onion-white', label: 'White Onion', ar: 'بصل أبيض', detail: 'Clean, firm white onions with excellent shelf life.', arDetail: 'بصل أبيض نظيف وصلب بعمر تخزين ممتاز.', category: 'Vegetables', icon: '02', image: 'https://images.pexels.com/photos/32986487/pexels-photo-32986487.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'onion-red', label: 'Red Onion', ar: 'بصل أحمر', detail: 'Deep-colored red onions with a balanced, rich flavor.', arDetail: 'بصل أحمر بلون غني ونكهة متوازنة.', category: 'Vegetables', icon: '03', image: 'https://images.pexels.com/photos/10159434/pexels-photo-10159434.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'potato', label: 'Potatoes', ar: 'بطاطس', detail: 'Carefully graded potatoes for retail and foodservice.', arDetail: 'بطاطس مفرزة بعناية للبيع بالتجزئة والخدمات الغذائية.', category: 'Vegetables', icon: '04', image: 'https://images.pexels.com/photos/15428958/pexels-photo-15428958.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'orange', label: 'Oranges', ar: 'برتقال', detail: 'Selected citrus in multiple sizes and specifications.', arDetail: 'حمضيات مختارة بأحجام ومواصفات متعددة.', category: 'Fruits', icon: '05', image: 'https://images.pexels.com/photos/37543950/pexels-photo-37543950.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'mango', label: 'Mango', ar: 'مانجا', detail: 'Premium mango varieties, prepared for international markets.', arDetail: 'أنواع مانجا فاخرة معدة للأسواق العالمية.', category: 'Fruits', icon: '06', image: 'https://images.pexels.com/photos/30542312/pexels-photo-30542312.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-5', label: '5 kg Sacks', ar: 'شكاير 5 كجم', detail: 'Sacks available in 5 kg weight. Color per customer choice.', arDetail: 'شكاير متوفرة بوزن 5 كجم. اللون حسب اختيار العميل.', category: 'Packaging', icon: '07', image: 'https://images.pexels.com/photos/38352190/pexels-photo-38352190.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-10', label: '10 kg Sacks', ar: 'شكاير 10 كجم', detail: 'Sacks available in 10 kg weight. Color per customer choice.', arDetail: 'شكاير متوفرة بوزن 10 كجم. اللون حسب اختيار العميل.', category: 'Packaging', icon: '08', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-15', label: '15 kg Sacks', ar: 'شكاير 15 كجم', detail: 'Sacks available in 15 kg weight. Color per customer choice.', arDetail: 'شكاير متوفرة بوزن 15 كجم. اللون حسب اختيار العميل.', category: 'Packaging', icon: '09', image: 'https://images.pexels.com/photos/10778111/pexels-photo-10778111.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-1530', label: '15-30 kg Sacks', ar: 'شكاير 15-30 كجم', detail: 'Sacks adjustable from 15 kg to 30 kg. Color per customer choice.', arDetail: 'شكاير قابلة للتعديل من 15 كجم إلى 30 كجم. اللون حسب اختيار العميل.', category: 'Packaging', icon: '10', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-jumbo', label: 'Big Bags (1-1.5 ton)', ar: 'جامبوهات (1-1.5 طن)', detail: 'Jumbo bags used for onions and potatoes, 1 to 1.5 tons.', arDetail: 'جامبوهات تستخدم للبصل والبطاطس، من 1 إلى 1.5 طن.', category: 'Packaging', icon: '11', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-crates', label: 'Wooden/Plastic Crates', ar: 'صناديق خشبية/بلاستيك', detail: 'Wooden or plastic crates for fruits. Weight per agreement: 10 kg, 15 kg.', arDetail: 'صناديق خشبية أو بلاستيك للفاكهة. الوزن حسب الاتفاق: 10 كجم، 15 كجم.', category: 'Packaging', icon: '12', image: 'https://images.pexels.com/photos/38352190/pexels-photo-38352190.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'pack-net', label: 'Net Bags', ar: 'أكياس شبكية', detail: 'Net bags for fruits, breathable and export-ready.', arDetail: 'أكياس شبكية للفاكهة، تسمح بالتهوية وجاهزة للتصدير.', category: 'Packaging', icon: '13', image: 'https://images.pexels.com/photos/10778111/pexels-photo-10778111.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'land', label: 'Land Shipping', ar: 'شحن بري', detail: 'Organized land freight with clear delivery coordination.', arDetail: 'شحن بري منظم بتنسيق تسليم واضح.', category: 'Shipping', icon: '14', image: 'https://images.pexels.com/photos/9754798/pexels-photo-9754798.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { id: 'sea', label: 'Sea Shipping', ar: 'شحن بحري', detail: 'Containerized sea freight for international destinations.', arDetail: 'شحن بحري بحاويات لوجهات دولية.', category: 'Shipping', icon: '15', image: 'https://images.pexels.com/photos/20581299/pexels-photo-20581299.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'carrot', label: 'Carrots', ar: 'Ø¬Ø²Ø±', detail: 'Fresh, crisp carrots sorted and graded for export quality.', arDetail: 'Ø¬Ø²Ø± Ø·Ø§Ø²Ø¬ Ù…Ù‚Ø±Ù…Ø´ØŒ Ù…ÙØ±Ø² ÙˆÙ…Ø±ØªØ¨ Ø¨Ø¬ÙˆØ¯Ø© ØªØµØ¯ÙŠØ±.', category: 'Vegetables', icon: '01', image: 'https://images.pexels.com/photos/33622710/pexels-photo-33622710.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'onion-white', label: 'White Onion', ar: 'Ø¨ØµÙ„ Ø£Ø¨ÙŠØ¶', detail: 'Clean, firm white onions with excellent shelf life.', arDetail: 'Ø¨ØµÙ„ Ø£Ø¨ÙŠØ¶ Ù†Ø¸ÙŠÙ ÙˆØµÙ„Ø¨ Ø¨Ø¹Ù…Ø± ØªØ®Ø²ÙŠÙ† Ù…Ù…ØªØ§Ø².', category: 'Vegetables', icon: '02', image: 'https://images.pexels.com/photos/32986487/pexels-photo-32986487.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'onion-red', label: 'Red Onion', ar: 'Ø¨ØµÙ„ Ø£Ø­Ù…Ø±', detail: 'Deep-colored red onions with a balanced, rich flavor.', arDetail: 'Ø¨ØµÙ„ Ø£Ø­Ù…Ø± Ø¨Ù„ÙˆÙ† ØºÙ†ÙŠ ÙˆÙ†ÙƒÙ‡Ø© Ù…ØªÙˆØ§Ø²Ù†Ø©.', category: 'Vegetables', icon: '03', image: 'https://images.pexels.com/photos/10159434/pexels-photo-10159434.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'potato', label: 'Potatoes', ar: 'Ø¨Ø·Ø§Ø·Ø³', detail: 'Carefully graded potatoes for retail and foodservice.', arDetail: 'Ø¨Ø·Ø§Ø·Ø³ Ù…ÙØ±Ø²Ø© Ø¨Ø¹Ù†Ø§ÙŠØ© Ù„Ù„Ø¨ÙŠØ¹ Ø¨Ø§Ù„ØªØ¬Ø²Ø¦Ø© ÙˆØ§Ù„Ø®Ø¯Ù…Ø§Øª Ø§Ù„ØºØ°Ø§Ø¦ÙŠØ©.', category: 'Vegetables', icon: '04', image: 'https://images.pexels.com/photos/15428958/pexels-photo-15428958.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'orange', label: 'Oranges', ar: 'Ø¨Ø±ØªÙ‚Ø§Ù„', detail: 'Selected citrus in multiple sizes and specifications.', arDetail: 'Ø­Ù…Ø¶ÙŠØ§Øª Ù…Ø®ØªØ§Ø±Ø© Ø¨Ø£Ø­Ø¬Ø§Ù… ÙˆÙ…ÙˆØ§ØµÙØ§Øª Ù…ØªØ¹Ø¯Ø¯Ø©.', category: 'Fruits', icon: '05', image: 'https://images.pexels.com/photos/37543950/pexels-photo-37543950.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'mango', label: 'Mango', ar: 'Ù…Ø§Ù†Ø¬Ø§', detail: 'Premium mango varieties, prepared for international markets.', arDetail: 'Ø£Ù†ÙˆØ§Ø¹ Ù…Ø§Ù†Ø¬Ø§ ÙØ§Ø®Ø±Ø© Ù…Ø¹Ø¯Ø© Ù„Ù„Ø£Ø³ÙˆØ§Ù‚ Ø§Ù„Ø¹Ø§Ù„Ù…ÙŠØ©.', category: 'Fruits', icon: '06', image: 'https://images.pexels.com/photos/30542312/pexels-photo-30542312.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-5', label: '5 kg Sacks', ar: 'Ø´ÙƒØ§ÙŠØ± 5 ÙƒØ¬Ù…', detail: 'Sacks available in 5 kg weight. Color per customer choice.', arDetail: 'Ø´ÙƒØ§ÙŠØ± Ù…ØªÙˆÙØ±Ø© Ø¨ÙˆØ²Ù† 5 ÙƒØ¬Ù…. Ø§Ù„Ù„ÙˆÙ† Ø­Ø³Ø¨ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¹Ù…ÙŠÙ„.', category: 'Packaging', icon: '07', image: 'https://images.pexels.com/photos/38352190/pexels-photo-38352190.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-10', label: '10 kg Sacks', ar: 'Ø´ÙƒØ§ÙŠØ± 10 ÙƒØ¬Ù…', detail: 'Sacks available in 10 kg weight. Color per customer choice.', arDetail: 'Ø´ÙƒØ§ÙŠØ± Ù…ØªÙˆÙØ±Ø© Ø¨ÙˆØ²Ù† 10 ÙƒØ¬Ù…. Ø§Ù„Ù„ÙˆÙ† Ø­Ø³Ø¨ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¹Ù…ÙŠÙ„.', category: 'Packaging', icon: '08', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-15', label: '15 kg Sacks', ar: 'Ø´ÙƒØ§ÙŠØ± 15 ÙƒØ¬Ù…', detail: 'Sacks available in 15 kg weight. Color per customer choice.', arDetail: 'Ø´ÙƒØ§ÙŠØ± Ù…ØªÙˆÙØ±Ø© Ø¨ÙˆØ²Ù† 15 ÙƒØ¬Ù…. Ø§Ù„Ù„ÙˆÙ† Ø­Ø³Ø¨ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¹Ù…ÙŠÙ„.', category: 'Packaging', icon: '09', image: 'https://images.pexels.com/photos/10778111/pexels-photo-10778111.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-1530', label: '15-30 kg Sacks', ar: 'Ø´ÙƒØ§ÙŠØ± 15-30 ÙƒØ¬Ù…', detail: 'Sacks adjustable from 15 kg to 30 kg. Color per customer choice.', arDetail: 'Ø´ÙƒØ§ÙŠØ± Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªØ¹Ø¯ÙŠÙ„ Ù…Ù† 15 ÙƒØ¬Ù… Ø¥Ù„Ù‰ 30 ÙƒØ¬Ù…. Ø§Ù„Ù„ÙˆÙ† Ø­Ø³Ø¨ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¹Ù…ÙŠÙ„.', category: 'Packaging', icon: '10', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-jumbo', label: 'Big Bags (1-1.5 ton)', ar: 'Ø¬Ø§Ù…Ø¨ÙˆÙ‡Ø§Øª (1-1.5 Ø·Ù†)', detail: 'Jumbo bags used for onions and potatoes, 1 to 1.5 tons.', arDetail: 'Ø¬Ø§Ù…Ø¨ÙˆÙ‡Ø§Øª ØªØ³ØªØ®Ø¯Ù… Ù„Ù„Ø¨ØµÙ„ ÙˆØ§Ù„Ø¨Ø·Ø§Ø·Ø³ØŒ Ù…Ù† 1 Ø¥Ù„Ù‰ 1.5 Ø·Ù†.', category: 'Packaging', icon: '11', image: 'https://images.pexels.com/photos/21958122/pexels-photo-21958122.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-crates', label: 'Wooden/Plastic Crates', ar: 'ØµÙ†Ø§Ø¯ÙŠÙ‚ Ø®Ø´Ø¨ÙŠØ©/Ø¨Ù„Ø§Ø³ØªÙŠÙƒ', detail: 'Wooden or plastic crates for fruits. Weight per agreement: 10 kg, 15 kg.', arDetail: 'ØµÙ†Ø§Ø¯ÙŠÙ‚ Ø®Ø´Ø¨ÙŠØ© Ø£Ùˆ Ø¨Ù„Ø§Ø³ØªÙŠÙƒ Ù„Ù„ÙØ§ÙƒÙ‡Ø©. Ø§Ù„ÙˆØ²Ù† Ø­Ø³Ø¨ Ø§Ù„Ø§ØªÙØ§Ù‚: 10 ÙƒØ¬Ù…ØŒ 15 ÙƒØ¬Ù….', category: 'Packaging', icon: '12', image: 'https://images.pexels.com/photos/38352190/pexels-photo-38352190.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'pack-net', label: 'Net Bags', ar: 'Ø£ÙƒÙŠØ§Ø³ Ø´Ø¨ÙƒÙŠØ©', detail: 'Net bags for fruits, breathable and export-ready.', arDetail: 'Ø£ÙƒÙŠØ§Ø³ Ø´Ø¨ÙƒÙŠØ© Ù„Ù„ÙØ§ÙƒÙ‡Ø©ØŒ ØªØ³Ù…Ø­ Ø¨Ø§Ù„ØªÙ‡ÙˆÙŠØ© ÙˆØ¬Ø§Ù‡Ø²Ø© Ù„Ù„ØªØµØ¯ÙŠØ±.', category: 'Packaging', icon: '13', image: 'https://images.pexels.com/photos/10778111/pexels-photo-10778111.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'land', label: 'Land Shipping', ar: 'Ø´Ø­Ù† Ø¨Ø±ÙŠ', detail: 'Organized land freight with clear delivery coordination.', arDetail: 'Ø´Ø­Ù† Ø¨Ø±ÙŠ Ù…Ù†Ø¸Ù… Ø¨ØªÙ†Ø³ÙŠÙ‚ ØªØ³Ù„ÙŠÙ… ÙˆØ§Ø¶Ø­.', category: 'Shipping', icon: '14', image: 'https://images.pexels.com/photos/9754798/pexels-photo-9754798.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { id: 'sea', label: 'Sea Shipping', ar: 'Ø´Ø­Ù† Ø¨Ø­Ø±ÙŠ', detail: 'Containerized sea freight for international destinations.', arDetail: 'Ø´Ø­Ù† Ø¨Ø­Ø±ÙŠ Ø¨Ø­Ø§ÙˆÙŠØ§Øª Ù„ÙˆØ¬Ù‡Ø§Øª Ø¯ÙˆÙ„ÙŠØ©.', category: 'Shipping', icon: '15', image: 'https://images.pexels.com/photos/20581299/pexels-photo-20581299.jpeg?auto=compress&cs=tinysrgb&w=800' },
 ];
 
 const copy = {
@@ -127,14 +127,14 @@ const copy = {
     trusted: 'Built for dependable trade',
     categories: 'Our categories',
     categoriesTitle: 'Everything you need for global trade.',
-    categoriesText: 'The products, packaging and logistics your business needs — handled with precision.',
+    categoriesText: 'The products, packaging and logistics your business needs â€” handled with precision.',
     vegetables: 'Vegetables', fruits: 'Fruits', seeds: 'Seeds', packaging: 'Packaging', shipping: 'Shipping',
     productsTitle: '',
     details: 'View details',
     contact: 'Contact us', contactTitle: "Let's start a partnership.",
     contactText: 'Tell us what you need and our team will respond with the right export solution.',
     land: 'Land shipping', sea: 'Sea shipping',
-    landDesc: 'Reliable routes · Clear coordination', seaDesc: 'Container-ready · Global destinations',
+    landDesc: 'Reliable routes Â· Clear coordination', seaDesc: 'Container-ready Â· Global destinations',
     search: 'Search products...',
     login: 'Sign in', logout: 'Sign out', account: 'My account',
     chat: 'How can we help?', chatWelcome: 'Welcome. Ask me about products, packaging, shipping, varieties, pricing, minimum order, delivery time, payment, or contact.',
@@ -160,46 +160,46 @@ const copy = {
     exploreTitle: 'Explore Products', exploreText: 'Choose a category to browse.',
   },
   ar: {
-    nav: ['الخضار', 'الفاكهة', 'التقاوي', 'التغليف', 'الشحن', 'اطلب الآن', 'تواصل معنا'],
-    heroKicker: 'الطزاجة في حركة',
-    heroTitle: 'من أرض مصر\nإلى الأسواق العالمية.',
-    heroText: 'المختار للاستيراد والتصدير يربط أجود الخضار والفاكهة بشركاء حول العالم.',
-    explore: 'اكتشف المنتجات',
-    order: 'اطلب الآن',
-    trusted: 'تجارة موثوقة من المصدر',
-    categories: 'أقسامنا',
-    categoriesTitle: 'كل ما تحتاجه للتجارة العالمية.',
-    categoriesText: 'المنتجات والتغليف والخدمات اللوجستية التي يحتاجها عملك — بدقة واحتراف.',
-    vegetables: 'الخضار', fruits: 'الفاكهة', seeds: 'التقاوي', packaging: 'التغليف', shipping: 'الشحن',
+    nav: ['Ø§Ù„Ø®Ø¶Ø§Ø±', 'Ø§Ù„ÙØ§ÙƒÙ‡Ø©', 'Ø§Ù„ØªÙ‚Ø§ÙˆÙŠ', 'Ø§Ù„ØªØºÙ„ÙŠÙ', 'Ø§Ù„Ø´Ø­Ù†', 'Ø§Ø·Ù„Ø¨ Ø§Ù„Ø¢Ù†', 'ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§'],
+    heroKicker: 'Ø§Ù„Ø·Ø²Ø§Ø¬Ø© ÙÙŠ Ø­Ø±ÙƒØ©',
+    heroTitle: 'Ù…Ù† Ø£Ø±Ø¶ Ù…ØµØ±\nØ¥Ù„Ù‰ Ø§Ù„Ø£Ø³ÙˆØ§Ù‚ Ø§Ù„Ø¹Ø§Ù„Ù…ÙŠØ©.',
+    heroText: 'Ø§Ù„Ù…Ø®ØªØ§Ø± Ù„Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯ ÙˆØ§Ù„ØªØµØ¯ÙŠØ± ÙŠØ±Ø¨Ø· Ø£Ø¬ÙˆØ¯ Ø§Ù„Ø®Ø¶Ø§Ø± ÙˆØ§Ù„ÙØ§ÙƒÙ‡Ø© Ø¨Ø´Ø±ÙƒØ§Ø¡ Ø­ÙˆÙ„ Ø§Ù„Ø¹Ø§Ù„Ù….',
+    explore: 'Ø§ÙƒØªØ´Ù Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª',
+    order: 'Ø§Ø·Ù„Ø¨ Ø§Ù„Ø¢Ù†',
+    trusted: 'ØªØ¬Ø§Ø±Ø© Ù…ÙˆØ«ÙˆÙ‚Ø© Ù…Ù† Ø§Ù„Ù…ØµØ¯Ø±',
+    categories: 'Ø£Ù‚Ø³Ø§Ù…Ù†Ø§',
+    categoriesTitle: 'ÙƒÙ„ Ù…Ø§ ØªØ­ØªØ§Ø¬Ù‡ Ù„Ù„ØªØ¬Ø§Ø±Ø© Ø§Ù„Ø¹Ø§Ù„Ù…ÙŠØ©.',
+    categoriesText: 'Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª ÙˆØ§Ù„ØªØºÙ„ÙŠÙ ÙˆØ§Ù„Ø®Ø¯Ù…Ø§Øª Ø§Ù„Ù„ÙˆØ¬Ø³ØªÙŠØ© Ø§Ù„ØªÙŠ ÙŠØ­ØªØ§Ø¬Ù‡Ø§ Ø¹Ù…Ù„Ùƒ â€” Ø¨Ø¯Ù‚Ø© ÙˆØ§Ø­ØªØ±Ø§Ù.',
+    vegetables: 'Ø§Ù„Ø®Ø¶Ø§Ø±', fruits: 'Ø§Ù„ÙØ§ÙƒÙ‡Ø©', seeds: 'Ø§Ù„ØªÙ‚Ø§ÙˆÙŠ', packaging: 'Ø§Ù„ØªØºÙ„ÙŠÙ', shipping: 'Ø§Ù„Ø´Ø­Ù†',
     productsTitle: '',
-    details: 'التفاصيل',
-    contact: 'تواصل معنا', contactTitle: 'خلّينا نبدأ شراكة.',
-    contactText: 'أخبرنا بما تحتاجه وسيقدم لك فريقنا الحل التصديري المناسب.',
-    land: 'شحن بري', sea: 'شحن بحري',
-    landDesc: 'طرق موثوقة · تنسيق واضح', seaDesc: 'جاهز للحاويات · وجهات عالمية',
-    search: 'ابحث عن منتج...',
-    login: 'تسجيل الدخول', logout: 'تسجيل الخروج', account: 'حسابي',
-    chat: 'كيف يمكننا مساعدتك؟', chatWelcome: 'أهلًا بك. اسألني عن المنتجات أو التغليف أو الشحن أو الأنواع أو الأسعار أو الحد الأدنى للطلب أو مدة التسليم أو الدفع أو التواصل.',
-    send: 'إرسال', request: 'طلب منتج',
-    name: 'الاسم بالكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني',
-    quantity: 'الكمية', shippingType: 'طريقة الشحن', notes: 'تفاصيل إضافية',
-    submit: 'إرسال الطلب', required: 'يرجى تسجيل الدخول لإرسال طلب.',
-    noResults: 'لا توجد منتجات مطابقة للبحث.',
-    authTitle: 'مكتب تجارتك', authText: 'سجل الدخول لحفظ طلباتك والاحتفاظ بكل تفاصيل تجارتك.',
-    signUp: 'إنشاء حساب', password: 'كلمة المرور', confirmPassword: 'تأكيد كلمة المرور',
-    haveAccount: 'لديك حساب بالفعل؟', newAccount: 'جديد هنا؟',
-    signUpNow: 'سجل الآن',
-    passwordMismatch: 'كلمتا المرور غير متطابقتين.',
-    passwordTooShort: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.',
-    accountExists: 'هذا البريد مسجل بالفعل. حاول تسجيل الدخول.',
-    success: 'تم حفظ طلبك وفتح واتساب لإرساله.',
-    whatsapp: 'راسلنا واتساب', emailUs: 'راسلنا بالبريد',
-    promiseTitle: 'التنسيق الذي يحافظ على الجودة.',
-    promiseText: 'من أول اختيار المنتج وحتى وصوله، ننسق التغليف والشحن البري والبحري بعناية.',
-    fromField: 'من الحقل إلى الحاوية',
-    product: 'المنتج', packagingLabel: 'التغليف',
-    callMe: 'اتصل بي', callMeTitle: 'اتصل بي', callMeText: 'أدخل اسمك ورقمك وسنتواصل معك فورًا.', callMeName: 'الاسم بالكامل', callMePhone: 'رقم الموبايل', callMeSend: 'إرسال',
-    exploreTitle: 'اكتشف المنتجات', exploreText: 'اختر قسم للتصفح.',
+    details: 'Ø§Ù„ØªÙØ§ØµÙŠÙ„',
+    contact: 'ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§', contactTitle: 'Ø®Ù„Ù‘ÙŠÙ†Ø§ Ù†Ø¨Ø¯Ø£ Ø´Ø±Ø§ÙƒØ©.',
+    contactText: 'Ø£Ø®Ø¨Ø±Ù†Ø§ Ø¨Ù…Ø§ ØªØ­ØªØ§Ø¬Ù‡ ÙˆØ³ÙŠÙ‚Ø¯Ù… Ù„Ùƒ ÙØ±ÙŠÙ‚Ù†Ø§ Ø§Ù„Ø­Ù„ Ø§Ù„ØªØµØ¯ÙŠØ±ÙŠ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨.',
+    land: 'Ø´Ø­Ù† Ø¨Ø±ÙŠ', sea: 'Ø´Ø­Ù† Ø¨Ø­Ø±ÙŠ',
+    landDesc: 'Ø·Ø±Ù‚ Ù…ÙˆØ«ÙˆÙ‚Ø© Â· ØªÙ†Ø³ÙŠÙ‚ ÙˆØ§Ø¶Ø­', seaDesc: 'Ø¬Ø§Ù‡Ø² Ù„Ù„Ø­Ø§ÙˆÙŠØ§Øª Â· ÙˆØ¬Ù‡Ø§Øª Ø¹Ø§Ù„Ù…ÙŠØ©',
+    search: 'Ø§Ø¨Ø­Ø« Ø¹Ù† Ù…Ù†ØªØ¬...',
+    login: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„', logout: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬', account: 'Ø­Ø³Ø§Ø¨ÙŠ',
+    chat: 'ÙƒÙŠÙ ÙŠÙ…ÙƒÙ†Ù†Ø§ Ù…Ø³Ø§Ø¹Ø¯ØªÙƒØŸ', chatWelcome: 'Ø£Ù‡Ù„Ù‹Ø§ Ø¨Ùƒ. Ø§Ø³Ø£Ù„Ù†ÙŠ Ø¹Ù† Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø£Ùˆ Ø§Ù„ØªØºÙ„ÙŠÙ Ø£Ùˆ Ø§Ù„Ø´Ø­Ù† Ø£Ùˆ Ø§Ù„Ø£Ù†ÙˆØ§Ø¹ Ø£Ùˆ Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ø£Ùˆ Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù„Ø·Ù„Ø¨ Ø£Ùˆ Ù…Ø¯Ø© Ø§Ù„ØªØ³Ù„ÙŠÙ… Ø£Ùˆ Ø§Ù„Ø¯ÙØ¹ Ø£Ùˆ Ø§Ù„ØªÙˆØ§ØµÙ„.',
+    send: 'Ø¥Ø±Ø³Ø§Ù„', request: 'Ø·Ù„Ø¨ Ù…Ù†ØªØ¬',
+    name: 'Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„ÙƒØ§Ù…Ù„', phone: 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ', email: 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ',
+    quantity: 'Ø§Ù„ÙƒÙ…ÙŠØ©', shippingType: 'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø´Ø­Ù†', notes: 'ØªÙØ§ØµÙŠÙ„ Ø¥Ø¶Ø§ÙÙŠØ©',
+    submit: 'Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨', required: 'ÙŠØ±Ø¬Ù‰ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ù„Ø¥Ø±Ø³Ø§Ù„ Ø·Ù„Ø¨.',
+    noResults: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†ØªØ¬Ø§Øª Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„Ù„Ø¨Ø­Ø«.',
+    authTitle: 'Ù…ÙƒØªØ¨ ØªØ¬Ø§Ø±ØªÙƒ', authText: 'Ø³Ø¬Ù„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ù„Ø­ÙØ¸ Ø·Ù„Ø¨Ø§ØªÙƒ ÙˆØ§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨ÙƒÙ„ ØªÙØ§ØµÙŠÙ„ ØªØ¬Ø§Ø±ØªÙƒ.',
+    signUp: 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨', password: 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±', confirmPassword: 'ØªØ£ÙƒÙŠØ¯ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±',
+    haveAccount: 'Ù„Ø¯ÙŠÙƒ Ø­Ø³Ø§Ø¨ Ø¨Ø§Ù„ÙØ¹Ù„ØŸ', newAccount: 'Ø¬Ø¯ÙŠØ¯ Ù‡Ù†Ø§ØŸ',
+    signUpNow: 'Ø³Ø¬Ù„ Ø§Ù„Ø¢Ù†',
+    passwordMismatch: 'ÙƒÙ„Ù…ØªØ§ Ø§Ù„Ù…Ø±ÙˆØ± ØºÙŠØ± Ù…ØªØ·Ø§Ø¨Ù‚ØªÙŠÙ†.',
+    passwordTooShort: 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† 6 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„.',
+    accountExists: 'Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ù…Ø³Ø¬Ù„ Ø¨Ø§Ù„ÙØ¹Ù„. Ø­Ø§ÙˆÙ„ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„.',
+    success: 'ØªÙ… Ø­ÙØ¸ Ø·Ù„Ø¨Ùƒ ÙˆÙØªØ­ ÙˆØ§ØªØ³Ø§Ø¨ Ù„Ø¥Ø±Ø³Ø§Ù„Ù‡.',
+    whatsapp: 'Ø±Ø§Ø³Ù„Ù†Ø§ ÙˆØ§ØªØ³Ø§Ø¨', emailUs: 'Ø±Ø§Ø³Ù„Ù†Ø§ Ø¨Ø§Ù„Ø¨Ø±ÙŠØ¯',
+    promiseTitle: 'Ø§Ù„ØªÙ†Ø³ÙŠÙ‚ Ø§Ù„Ø°ÙŠ ÙŠØ­Ø§ÙØ¸ Ø¹Ù„Ù‰ Ø§Ù„Ø¬ÙˆØ¯Ø©.',
+    promiseText: 'Ù…Ù† Ø£ÙˆÙ„ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ù…Ù†ØªØ¬ ÙˆØ­ØªÙ‰ ÙˆØµÙˆÙ„Ù‡ØŒ Ù†Ù†Ø³Ù‚ Ø§Ù„ØªØºÙ„ÙŠÙ ÙˆØ§Ù„Ø´Ø­Ù† Ø§Ù„Ø¨Ø±ÙŠ ÙˆØ§Ù„Ø¨Ø­Ø±ÙŠ Ø¨Ø¹Ù†Ø§ÙŠØ©.',
+    fromField: 'Ù…Ù† Ø§Ù„Ø­Ù‚Ù„ Ø¥Ù„Ù‰ Ø§Ù„Ø­Ø§ÙˆÙŠØ©',
+    product: 'Ø§Ù„Ù…Ù†ØªØ¬', packagingLabel: 'Ø§Ù„ØªØºÙ„ÙŠÙ',
+    callMe: 'Ø§ØªØµÙ„ Ø¨ÙŠ', callMeTitle: 'Ø§ØªØµÙ„ Ø¨ÙŠ', callMeText: 'Ø£Ø¯Ø®Ù„ Ø§Ø³Ù…Ùƒ ÙˆØ±Ù‚Ù…Ùƒ ÙˆØ³Ù†ØªÙˆØ§ØµÙ„ Ù…Ø¹Ùƒ ÙÙˆØ±Ù‹Ø§.', callMeName: 'Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„ÙƒØ§Ù…Ù„', callMePhone: 'Ø±Ù‚Ù… Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„', callMeSend: 'Ø¥Ø±Ø³Ø§Ù„',
+    exploreTitle: 'Ø§ÙƒØªØ´Ù Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª', exploreText: 'Ø§Ø®ØªØ± Ù‚Ø³Ù… Ù„Ù„ØªØµÙØ­.',
   },
 };
 
@@ -327,11 +327,11 @@ function App() {
       const { data } = await supabase.from('bot_questions').select('id, question_ar, question_en, answer_ar, answer_en, display_order').eq('is_active', true).order('display_order');
       if (data) setBotQuestions(data as BotQuestion[]);
     })();
-  }, []);
+  }, [chatOpen]);
 
   const sendCallMe = () => {
     const lines = isAr
-      ? ['اتصل بي ضروري، أنا محتاج أتواصل معكم.', '', `الاسم: ${callMeForm.name}`, `رقم الموبايل: ${callMeForm.phone}`]
+      ? ['Ø§ØªØµÙ„ Ø¨ÙŠ Ø¶Ø±ÙˆØ±ÙŠØŒ Ø£Ù†Ø§ Ù…Ø­ØªØ§Ø¬ Ø£ØªÙˆØ§ØµÙ„ Ù…Ø¹ÙƒÙ….', '', `Ø§Ù„Ø§Ø³Ù…: ${callMeForm.name}`, `Ø±Ù‚Ù… Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„: ${callMeForm.phone}`]
       : ['Call me please, I need to communicate with you.', '', `Name: ${callMeForm.name}`, `Mobile: ${callMeForm.phone}`];
     const text = encodeURIComponent(lines.join('\n'));
     const waNumber = siteContent.contact_whatsapp_1 ?? '201090903681';
@@ -403,14 +403,14 @@ function App() {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session?.user ?? null);
       if (data.session?.user) {
-        setToast(isAr ? 'أهلًا بعودتك.' : 'Welcome back.');
+        setToast(isAr ? 'Ø£Ù‡Ù„Ù‹Ø§ Ø¨Ø¹ÙˆØ¯ØªÙƒ.' : 'Welcome back.');
         setAuthOpen(false);
       }
     });
     const { data } = supabase.auth.onAuthStateChange((event, next) => {
       setSession(next?.user ?? null);
       if (event === 'SIGNED_IN' && next?.user) {
-        setToast(isAr ? 'تم تسجيل الدخول.' : 'Signed in.');
+        setToast(isAr ? 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„.' : 'Signed in.');
         setAuthOpen(false);
       }
       if (event === 'SIGNED_OUT') {
@@ -631,18 +631,18 @@ function App() {
       if (msg.includes('already') || msg.includes('registered') || msg.includes('exists')) {
         setAuthError(isAr ? t.accountExists : t.accountExists);
       } else {
-        setAuthError(isAr ? 'تحقق من بياناتك وحاول مرة أخرى.' : 'Please check your details and try again.');
+        setAuthError(isAr ? 'ØªØ­Ù‚Ù‚ Ù…Ù† Ø¨ÙŠØ§Ù†Ø§ØªÙƒ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.' : 'Please check your details and try again.');
       }
     } else {
       setAuthOpen(false);
       setAuthForm({ email: '', password: '', confirmPassword: '' });
-      setToast(authMode === 'login' ? (isAr ? 'أهلًا بعودتك.' : 'Welcome back.') : (isAr ? 'تم إنشاء حسابك.' : 'Your account is ready.'));
+      setToast(authMode === 'login' ? (isAr ? 'Ø£Ù‡Ù„Ù‹Ø§ Ø¨Ø¹ÙˆØ¯ØªÙƒ.' : 'Welcome back.') : (isAr ? 'ØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨Ùƒ.' : 'Your account is ready.'));
     }
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setToast(isAr ? 'تم تسجيل الخروج.' : 'Signed out.');
+    setToast(isAr ? 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬.' : 'Signed out.');
   };
 
   const scrollContact = () => {
@@ -708,7 +708,7 @@ function App() {
         {dark ? <Sun size={16} /> : <Moon size={16} />}
       </button>
       <button className="lang-switch" onClick={() => setLang(isAr ? 'en' : 'ar')}>
-        <Globe2 size={16} /> {isAr ? 'EN' : 'عربي'}
+        <Globe2 size={16} /> {isAr ? 'EN' : 'Ø¹Ø±Ø¨ÙŠ'}
       </button>
       {session ? (
         <button className="account-btn" onClick={signOut}>
@@ -730,8 +730,8 @@ function App() {
         <img src="/logo.jpeg" alt="Al-Mokhtar" />
         <span>AL-MOKHTAR <small>IMPORT & EXPORT</small></span>
       </div>
-      <span>© 2026 Al-Mokhtar Import & Export</span>
-      <span>CAIRO · EGYPT</span>
+      <span>Â© 2026 Al-Mokhtar Import & Export</span>
+      <span>CAIRO Â· EGYPT</span>
     </footer>
   );
   const sharedOverlays = (
@@ -773,7 +773,7 @@ function App() {
   if (view === 'category') {
     const categoryProducts = products.filter((p) => p.category === activeCategory);
     const categoryLabel = activeCategory === 'Seeds'
-      ? (isAr ? 'التقاوي' : 'Seeds')
+      ? (isAr ? 'Ø§Ù„ØªÙ‚Ø§ÙˆÙŠ' : 'Seeds')
       : t[activeCategory.toLowerCase() as 'vegetables' | 'fruits' | 'packaging' | 'shipping'] ?? activeCategory;
     return (
       <div className="app-shell page-enter" style={{ direction: isAr ? 'rtl' : 'ltr' }}>
@@ -792,7 +792,7 @@ function App() {
           <section className="variety-page">
             <button className="variety-page-back" onClick={backToMain}>
               <ArrowUpRight size={16} style={{ transform: 'rotate(180deg)' }} />
-              {isAr ? 'رجوع للرئيسية' : 'Back to home'}
+              {isAr ? 'Ø±Ø¬ÙˆØ¹ Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©' : 'Back to home'}
             </button>
             <div className="variety-page-header reveal">
               <div className="section-label"><span>02</span> {categoryLabel}</div>
@@ -840,18 +840,18 @@ function App() {
           <section className="variety-detail">
             <button className="variety-detail-back" onClick={backToVarieties}>
               <ArrowUpRight size={16} style={{ transform: 'rotate(180deg)' }} />
-              {isAr ? 'رجوع للأنواع' : 'Back to varieties'}
+              {isAr ? 'Ø±Ø¬ÙˆØ¹ Ù„Ù„Ø£Ù†ÙˆØ§Ø¹' : 'Back to varieties'}
             </button>
             <div className="variety-detail-grid reveal">
               <div className="variety-detail-img" style={{ backgroundImage: `url(${selectedVariety.image})` }} />
               <div className="variety-detail-info">
-                <div className="section-label"><span>★</span> {selectedVariety.category}</div>
+                <div className="section-label"><span>â˜…</span> {selectedVariety.category}</div>
                 <h1>{isAr ? selectedVariety.ar : selectedVariety.label}</h1>
                 <p>{isAr ? selectedVariety.arDetail : selectedVariety.detail}</p>
                 <div className="variety-detail-specs">
-                  <div><span>{isAr ? 'القسم' : 'Category'}</span><span>{selectedVariety.category}</span></div>
-                  <div><span>{isAr ? 'المنتج' : 'Product'}</span><span>{varietyProduct ? (isAr ? varietyProduct.ar : varietyProduct.label) : '-'}</span></div>
-                  <div><span>{isAr ? 'النوع' : 'Variety'}</span><span>{isAr ? selectedVariety.ar : selectedVariety.label}</span></div>
+                  <div><span>{isAr ? 'Ø§Ù„Ù‚Ø³Ù…' : 'Category'}</span><span>{selectedVariety.category}</span></div>
+                  <div><span>{isAr ? 'Ø§Ù„Ù…Ù†ØªØ¬' : 'Product'}</span><span>{varietyProduct ? (isAr ? varietyProduct.ar : varietyProduct.label) : '-'}</span></div>
+                  <div><span>{isAr ? 'Ø§Ù„Ù†ÙˆØ¹' : 'Variety'}</span><span>{isAr ? selectedVariety.ar : selectedVariety.label}</span></div>
                 </div>
                 <button className="button button-gold full" style={{ marginTop: '30px' }} onClick={() => showOrder(varietyProduct ?? undefined)}>
                   {t.request} <ArrowUpRight size={18} />
@@ -885,7 +885,7 @@ function App() {
           <section className="variety-page">
             <button className="variety-page-back" onClick={backToMain}>
               <ArrowUpRight size={16} style={{ transform: 'rotate(180deg)' }} />
-              {isAr ? 'رجوع للمنتجات' : 'Back to products'}
+              {isAr ? 'Ø±Ø¬ÙˆØ¹ Ù„Ù„Ù…Ù†ØªØ¬Ø§Øª' : 'Back to products'}
             </button>
             <div className="variety-page-header reveal">
               <div className="section-label"><span>02</span> {varietyProduct.category}</div>
@@ -941,21 +941,21 @@ function App() {
           <section className="product-detail-page">
             <button className="variety-detail-back" onClick={() => { if (detailProduct.category === 'Shipping' || detailProduct.category === 'Packaging') { backToMain(); } else { backToMain(); } }}>
               <ArrowUpRight size={16} style={{ transform: 'rotate(180deg)' }} />
-              {isAr ? 'رجوع' : 'Back'}
+              {isAr ? 'Ø±Ø¬ÙˆØ¹' : 'Back'}
             </button>
             <div className="product-detail-hero reveal">
               <div className="product-detail-hero-img" style={{ backgroundImage: `url(${detailImage})` }}>
                 <div className="product-detail-hero-overlay" />
               </div>
               <div className="product-detail-hero-info">
-                <div className="section-label"><span>★</span> {detailProduct.category}</div>
+                <div className="section-label"><span>â˜…</span> {detailProduct.category}</div>
                 <h1>{isAr ? detailProduct.ar : detailProduct.label}</h1>
                 <p>{description}</p>
               </div>
             </div>
             {features.length > 0 && (
               <div className="product-detail-features reveal reveal-delay-1">
-                <div className="product-detail-section-title">{isAr ? 'المميزات' : 'Features'}</div>
+                <div className="product-detail-section-title">{isAr ? 'Ø§Ù„Ù…Ù…ÙŠØ²Ø§Øª' : 'Features'}</div>
                 <div className="product-detail-features-grid">
                   {features.map((feature, i) => (
                     <div className="product-detail-feature-item" key={i}>
@@ -968,7 +968,7 @@ function App() {
             )}
             {uses && (
               <div className="product-detail-uses reveal reveal-delay-2">
-                <div className="product-detail-section-title">{isAr ? 'الاستخدامات المناسبة' : 'Suitable Uses'}</div>
+                <div className="product-detail-section-title">{isAr ? 'Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù…Ø§Øª Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø©' : 'Suitable Uses'}</div>
                 <p>{uses}</p>
               </div>
             )}
@@ -1039,8 +1039,8 @@ function App() {
 
         <section className="ticker">
           <div>{isAr
-            ? <>منتجات طازجة <span>✦</span> وصول عالمي <span>✦</span> تجارة مسؤولة <span>✦</span> منتجات طازجة <span>✦</span> وصول عالمي <span>✦</span> تجارة مسؤولة <span>✦</span></>
-            : <>FRESH PRODUCE <span>✦</span> GLOBAL REACH <span>✦</span> RESPONSIBLE TRADE <span>✦</span> FRESH PRODUCE <span>✦</span> GLOBAL REACH <span>✦</span> RESPONSIBLE TRADE <span>✦</span></>
+            ? <>Ù…Ù†ØªØ¬Ø§Øª Ø·Ø§Ø²Ø¬Ø© <span>âœ¦</span> ÙˆØµÙˆÙ„ Ø¹Ø§Ù„Ù…ÙŠ <span>âœ¦</span> ØªØ¬Ø§Ø±Ø© Ù…Ø³Ø¤ÙˆÙ„Ø© <span>âœ¦</span> Ù…Ù†ØªØ¬Ø§Øª Ø·Ø§Ø²Ø¬Ø© <span>âœ¦</span> ÙˆØµÙˆÙ„ Ø¹Ø§Ù„Ù…ÙŠ <span>âœ¦</span> ØªØ¬Ø§Ø±Ø© Ù…Ø³Ø¤ÙˆÙ„Ø© <span>âœ¦</span></>
+            : <>FRESH PRODUCE <span>âœ¦</span> GLOBAL REACH <span>âœ¦</span> RESPONSIBLE TRADE <span>âœ¦</span> FRESH PRODUCE <span>âœ¦</span> GLOBAL REACH <span>âœ¦</span> RESPONSIBLE TRADE <span>âœ¦</span></>
           }</div>
         </section>
 
@@ -1121,7 +1121,7 @@ function App() {
                 <span className="contact-icon"><MessageCircle size={19} /></span>
                 <div>
                   <small>{t.whatsapp}</small>
-                  <b dir="ltr">+{siteContent.contact_whatsapp_1 ?? '201090903681'} · +{siteContent.contact_whatsapp_2 ?? '201276785117'}</b>
+                  <b dir="ltr">+{siteContent.contact_whatsapp_1 ?? '201090903681'} Â· +{siteContent.contact_whatsapp_2 ?? '201276785117'}</b>
                 </div>
               </a>
               <a href={siteContent.contact_facebook ?? 'https://www.facebook.com/share/1Dk6EGYJrn/?mibextid=wwXIfr'} target="_blank" rel="noreferrer">
@@ -1259,7 +1259,7 @@ function ChatPanel({ t, isAr, onClose, botQuestions }: { t: typeof copy.en; isAr
         <Bot size={21} />
         <div>
           <b>Al-Mokhtar Assistant</b>
-          <small>Online · {isAr ? 'معلومات المنتجات' : 'Product information'}</small>
+          <small>Online Â· {isAr ? 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª' : 'Product information'}</small>
         </div>
         <button onClick={onClose}><X size={16} /></button>
       </div>
@@ -1277,7 +1277,7 @@ function ChatPanel({ t, isAr, onClose, botQuestions }: { t: typeof copy.en; isAr
           ))}
           {botQuestions.length === 0 && (
             <div style={{ color: 'var(--muted)', fontSize: 13, padding: '8px 0' }}>
-              {isAr ? 'لا توجد أسئلة متاحة حاليًا.' : 'No questions available right now.'}
+              {isAr ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø£Ø³Ø¦Ù„Ø© Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§.' : 'No questions available right now.'}
             </div>
           )}
         </div>
@@ -1308,7 +1308,7 @@ function OrderModal({
     event.preventDefault();
     if (!session) { onAuth(); return; }
     if (!form.name || !form.phone || !form.quantity) {
-      setError(isAr ? 'يرجى ملء الاسم والهاتف والكمية.' : 'Please fill in name, phone and quantity.');
+      setError(isAr ? 'ÙŠØ±Ø¬Ù‰ Ù…Ù„Ø¡ Ø§Ù„Ø§Ø³Ù… ÙˆØ§Ù„Ù‡Ø§ØªÙ ÙˆØ§Ù„ÙƒÙ…ÙŠØ©.' : 'Please fill in name, phone and quantity.');
       return;
     }
     const { error: insertError } = await supabase.from('orders').insert({
@@ -1323,11 +1323,11 @@ function OrderModal({
       notes: form.notes || null,
     });
     if (insertError) {
-      setError(isAr ? 'تعذر حفظ الطلب. حاول مرة أخرى.' : 'We could not save your request. Please try again.');
+      setError(isAr ? 'ØªØ¹Ø°Ø± Ø­ÙØ¸ Ø§Ù„Ø·Ù„Ø¨. Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.' : 'We could not save your request. Please try again.');
       return;
     }
     const text =
-      `${isAr ? 'طلب جديد من الموقع' : 'New website order'}%0A%0A` +
+      `${isAr ? 'Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯ Ù…Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'New website order'}%0A%0A` +
       `${t.name}: ${form.name}%0A` +
       `${t.phone}: ${form.phone}%0A` +
       `${t.email}: ${form.email || '-'}%0A` +
@@ -1371,7 +1371,7 @@ function OrderModal({
               </label>
               <label>{t.shippingType}
                 <select value={form.shipping} onChange={(e) => setForm({ ...form, shipping: e.target.value })}>
-                  <option value="">—</option>
+                  <option value="">â€”</option>
                   <option>{t.land}</option>
                   <option>{t.sea}</option>
                 </select>
@@ -1410,7 +1410,7 @@ function AuthModal({
         <button className="modal-close" onClick={onClose}><X /></button>
         <div className="auth-mark"><img src="/logo.jpeg" alt="Al-Mokhtar" /></div>
         <div className="section-label">{t.authTitle}</div>
-        <h2>{mode === 'login' ? (isAr ? 'تسجيل الدخول' : 'Sign in') : (isAr ? 'إنشاء حساب' : 'Create account')}</h2>
+        <h2>{mode === 'login' ? (isAr ? 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„' : 'Sign in') : (isAr ? 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨' : 'Create account')}</h2>
         <p>{t.authText}</p>
         <form onSubmit={onSubmit}>
           <label>{t.email}
@@ -1426,7 +1426,7 @@ function AuthModal({
           )}
           {error && <div className="form-error">{error}</div>}
           <button className="button button-gold full" type="submit">
-            {mode === 'login' ? (isAr ? 'تسجيل الدخول' : 'Sign in') : (isAr ? 'إنشاء الحساب' : 'Create account')} <ArrowUpRight size={18} />
+            {mode === 'login' ? (isAr ? 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„' : 'Sign in') : (isAr ? 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø­Ø³Ø§Ø¨' : 'Create account')} <ArrowUpRight size={18} />
           </button>
         </form>
         <button className="text-switch" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setForm({ email: form.email, password: '', confirmPassword: '' }); }}>
@@ -1440,3 +1440,4 @@ function AuthModal({
 }
 
 export default App;
+
