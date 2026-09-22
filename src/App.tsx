@@ -327,7 +327,7 @@ function App() {
       const { data } = await supabase.from('bot_questions').select('id, question_ar, question_en, answer_ar, answer_en, display_order').eq('is_active', true).order('display_order');
       if (data) setBotQuestions(data as BotQuestion[]);
     })();
-  }, []);
+  }, [chatOpen]);
 
   const sendCallMe = () => {
     const lines = isAr
